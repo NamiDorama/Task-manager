@@ -14,13 +14,14 @@ cd task-manager
 ```
 ---
 
-***Привяжите к своему репозиторию***
+#### Привяжите к своему репозиторию***
 1. Создайте новый репозиторий на github
 
-2. Подвяжите текущий template к своему репозиторию
+2. Подвяжите текущий task-manager к своему репозиторию
 ```js
 git remote set-url origin "ссылка на ваш репозиторий"
 ```
+
 ---
 
 
@@ -50,6 +51,7 @@ npm install -g babel-cli
 ```js
 npm rebuild node-sass
 ```
+---
 
 ## Запуск сервера
 
@@ -57,8 +59,12 @@ npm rebuild node-sass
 nodemon server/app.js --exec babel-node --presets es2015,stage-2
 ```
 ---
-#### При успешном запуске должно написать 
-*Server is up and running on port 8080*
+
+#### При успешном запуске должно написать
+```js
+Server is up and running on port 8080
+```
+
 
 ---
 
