@@ -2,7 +2,7 @@
 
 1. Клонируете репозиторий
 ```js
-git clone https://github.com/dmgame/template.git
+git clone https://github.com/dmgame/task-manager-v.2.0.git
 ```
 2. Перейдите в склонированную папку или откройте е в редакторе кода
 ```js
@@ -24,7 +24,7 @@ git remote set-url origin "ссылка на ваш репозиторий"
 ---
 
 
-## Запуск сервера
+## Настройка сервера (установка доп пакетов для сервера, выполняется один раз)
 
 1.
 ```js
@@ -51,7 +51,8 @@ npm install -g babel-cli
 npm rebuild node-sass
 ```
 
-6.
+## Запуск сервера
+
 ```js
 nodemon server/app.js --exec babel-node --presets es2015,stage-2
 ```
@@ -89,5 +90,73 @@ localhost:8080/task
 ---
 #### Логин:  *admin@task.com*, Пароль: *abcd123*
 
+#### Что умеет сервер
+1. Верефикация пользователя пример запроса на jQuery:
+```js
+ $.ajax({
+    method: 'POST',
+    data: JSON.stringify(this._sendingObj),
+    contentType: 'application/json',
+    url: 'http://localhost:8080/login',
+    success: function (res){
+        console.log(this);
+        self.setTocken(res._id, self._save_checkbox.prop('checked'));
 
+    },
+    error: function (err){
+        console.log(err);
+    }
+})
+```
+
+2. Отдавайть все таски из базы пример запроса на jQuery:
+```js
+$.ajax({
+    method: 'POST',
+    url: 'http://localhost:8080/allTasks',
+    success: function(res){
+        self.sortTasks(res)
+            .then(self.render)
+            .catch(function(error){
+                console.error(error);
+            })
+    },
+    error: function(error){
+        console.error(error);
+    }
+})
+```
+3. Добавление новых тасков
+```js
+$.ajax({
+    data: JSON.stringify(data),
+    type: 'POST',
+    contentType: 'application/json',
+    url: `http://localhost:8080/add/`,
+    success: function(data){
+        //какие-то действия при том если поменялось
+    },
+    error: function () {
+		//какие-то действия при том если не поменялось
+    }
+
+});
+```
+
+4. Редактирование тасков:
+```js
+$.ajax({
+    data: JSON.stringify(data),
+    type: 'PUT',
+    contentType: 'application/json',
+    url: `http://localhost:8080/edit/${taskID}`,
+    success: function(data){
+        //какие-то действия при том если поменялось
+    },
+    error: function () {
+		//какие-то действия при том если не поменялось
+    }
+
+});
+```
 

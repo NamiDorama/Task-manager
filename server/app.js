@@ -41,16 +41,16 @@ app.get('/edit', (req,res) => {
 	res.status(200).sendFile(__dirname + '/edit.html');
 });
 
-app.post('/edit', (req,res) => {
+app.post('/add', (req,res) => {
 	db.createTask(req.body).then(data => res.send(data));
 });
 
 // edit task
-// app.put('/YOUR_ROUTE/:id', function(req, res){
-//     Task.findOneAndUpdate({_id:req.params.id}, req.body, (err, task) => {
-//         res.send(task);
-//     });
-// });
+app.put('/edit/:id', function(req, res){
+    Task.findOneAndUpdate({_id:req.params.id}, req.body, (err, task) => {
+        res.send(task);
+    });
+});
 // //СНИЗУ АЯКС ЗАПРОС СО СТРАНИЦЫ YOUR_ROUTE. Поменять его на свой реальный роут, сделать тоже самое в пут запросе сверху
 // //ПОТОМ УБРАТЬ АЯКС ЗАПРОС СО СТОРОНЫ СЕРВЕРА
 // $.ajax({
@@ -81,7 +81,7 @@ app.post('/login', (req,res) => {
 				 	res.send(data);
 				} else {
 					res.sendStatus(404);
-				};
+				}
 			}
 		});
 });
