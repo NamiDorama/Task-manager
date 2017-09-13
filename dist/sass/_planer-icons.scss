@@ -1,15 +1,15 @@
 @font-face {
-	font-family: "planer-icons";
-	src: url('../fonts/planer-icons.eot');
-	src: url('../fonts/planer-icons.eot?#iefix') format('eot'),
-		url('../fonts/planer-icons.woff2') format('woff2'),
-		url('../fonts/planer-icons.woff') format('woff'),
-		url('../fonts/planer-icons.ttf') format('truetype'),
-		url('../fonts/planer-icons.svg#planer-icons') format('svg');
+	font-family: "plener-icons";
+	src: url('../fonts/plener-icons.eot');
+	src: url('../fonts/plener-icons.eot?#iefix') format('eot'),
+		url('../fonts/plener-icons.woff2') format('woff2'),
+		url('../fonts/plener-icons.woff') format('woff'),
+		url('../fonts/plener-icons.ttf') format('truetype'),
+		url('../fonts/plener-icons.svg#plener-icons') format('svg');
 }
 
 @mixin icon-styles {
-	font-family: "planer-icons";
+	font-family: "plener-icons";
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 	font-style: normal;
