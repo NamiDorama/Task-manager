@@ -4,77 +4,114 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-;(function ($) {
-	var Tasks = function () {
-		function Tasks() {
-			_classCallCheck(this, Tasks);
-		}
+;
+(function ($) {
+    var Tasks = function () {
+        function Tasks() {
+            _classCallCheck(this, Tasks);
+        }
 
-		_createClass(Tasks, [{
-			key: 'init',
-			value: function init() {
-				var self = this;
+        _createClass(Tasks, [{
+            key: 'init',
+            value: function init() {
+                var self = this;
 
-				this.checkToken(self).then(this.getTasks).then(this.sortTasks).catch(this.logout);
-			}
-		}, {
-			key: 'checkToken',
-			value: function checkToken(self) {
+                this.checkToken(self).then(this.getTasks).then(this.sortTasks).catch(this.logout);
+            }
+        }, {
+            key: 'checkToken',
+            value: function checkToken(self) {
 
-				return new Promise(function (resolve, reject) {
+                return new Promise(function (resolve, reject) {
 
-					var index = document.cookie.indexOf('_id');
-					var indexEnd = document.cookie.indexOf(';', index);
-					var token = indexEnd === -1 ? document.cookie.slice(index) : document.cookie.slice(index, indexEnd);
+                    var index = document.cookie.indexOf('_id');
+                    var indexEnd = document.cookie.indexOf(';', index);
+                    var token = indexEnd === -1 ? document.cookie.slice(index) : document.cookie.slice(index, indexEnd);
 
-					if (index !== -1) resolve(self);else reject('Token not found');
-				});
-			}
-		}, {
-			key: 'getTasks',
-			value: function getTasks(self) {
-				console.log('getting task...');
+                    if (index !== -1) resolve(self);else reject('Token not found');
+                });
+            }
+        }, {
+            key: 'getTasks',
+            value: function getTasks(self) {
+                console.log('getting task...');
 
-				return new Promise(function (resolve, reject) {
+                return new Promise(function (resolve, reject) {
 
-					$.ajax({
-						method: 'POST',
-						url: 'http://localhost:8080/allTasks',
-						success: function success(res) {
-							self.response = res;
-							resolve(self);
-						},
-						error: function error(_error) {
-							reject(_error);
-						}
-					});
-				});
-			}
-		}, {
-			key: 'logout',
-			value: function logout() {
-				// window.location = '/login';
-			}
-		}, {
-			key: 'sortTasks',
-			value: function sortTasks(self) {
-				console.log('sorting tasks...', self);
-				// перебирать self.response в методе each
-				// добавить новые поля: task.ms - время в милисекундах, когда таск должен быть выполнен
-				// в каждом таксе есть поля дата, из которого мы можем получить время м мс
-				// task.day, task.month - получить день и число из той даты
-				// итоговый объект в виде: {'2020-05-03': [{_id: "58af2e23222f976ac41156e4"}, {taskDay: Mon}...]}
-			}
-		}, {
-			key: 'render',
-			value: function render(self) {
-				console.log('rendering tasks...');
-			}
-		}]);
+                    $.ajax({
+                        method: 'POST',
+                        url: 'http://localhost:8080/allTasks',
+                        success: function success(res) {
+                            self.response = res;
+                            resolve(self);
+                        },
+                        error: function error(_error) {
+                            reject(_error);
+                        }
+                    });
+                });
+            }
+        }, {
+            key: 'logout',
+            value: function logout() {
+                // window.location = '/login';
+            }
+        }, {
+            key: 'sortTasks',
+            value: function sortTasks(self) {
+                console.log('sorting tasks...');
 
-		return Tasks;
-	}();
+                var taskObj = {};
+                var tasks = self.response.map(function (task) {
 
-	var task = new Tasks();
-	task.init();
+                    task.ms = Date.parse(task.date);
+                    task.day = new Date(task.ms).getDate();
+                    task.month = new Date(task.ms).toLocaleString('ru', { month: 'short' });
+
+                    return task;
+                }).sort(function (prev, next) {
+                    return prev.ms - next.ms;
+                });
+
+                var undoneTasks = tasks.filter(function (task) {
+                    return task.status === 'undone';
+                });
+                var doneTasks = tasks.filter(function (task) {
+                    return task.status === 'done';
+                });
+
+                undoneTasks = Tasks.createObjFromArr(undoneTasks);
+                doneTasks = Tasks.createObjFromArr(doneTasks);
+
+                console.log(undoneTasks);
+                console.log(doneTasks);
+            }
+        }, {
+            key: 'render',
+            value: function render(self) {
+                console.log('rendering tasks...');
+            }
+        }], [{
+            key: 'createObjFromArr',
+            value: function createObjFromArr(arr) {
+
+                var obj = {};
+
+                arr.forEach(function (task, i) {
+                    if (!obj[task.date]) {
+                        obj[task.date] = arr.filter(function (el) {
+                            return el.date === task.date;
+                        });
+                    }
+                });
+
+                return obj;
+            }
+        }]);
+
+        return Tasks;
+    }();
+
+    var task = new Tasks();
+    task.init();
 })(jQuery);
