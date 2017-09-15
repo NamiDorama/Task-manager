@@ -16,7 +16,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             value: function init() {
                 var self = this;
 
-                this.checkToken(self).then(this.getTasks).then(this.sortTasks).catch(this.logout);
+                this.checkToken(self).then(this.getTasks).then(this.sortTasks).then(this.render).then(this.addEvent).then(Tasks.hidePreloader).catch(this.logout);
             }
         }, {
             key: 'checkToken',
@@ -80,18 +80,33 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     return task.status === 'done';
                 });
 
-                undoneTasks = Tasks.createObjFromArr(undoneTasks);
-                doneTasks = Tasks.createObjFromArr(doneTasks);
+                self.undoneTasks = Tasks.createObjFromArr(undoneTasks);
+                self.doneTasks = Tasks.createObjFromArr(doneTasks);
 
-                console.log(undoneTasks);
-                console.log(doneTasks);
+                return self;
             }
         }, {
             key: 'render',
             value: function render(self) {
-                console.log('rendering tasks...');
+                console.log('rendering tasks...', self);
+
+                return new Promise(function (resolve, reject) {
+                    resolve(self);
+                });
+            }
+        }, {
+            key: 'addEvent',
+            value: function addEvent(self) {
+                console.log('Adding event...', self);
+                $('.task-header').on('click', Tasks.taskAccordion);
             }
         }], [{
+            key: 'hidePreloader',
+            value: function hidePreloader() {
+
+                $('#loading').addClass('hide');
+            }
+        }, {
             key: 'createObjFromArr',
             value: function createObjFromArr(arr) {
 
@@ -106,6 +121,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 });
 
                 return obj;
+            }
+        }, {
+            key: 'taskAccordion',
+            value: function taskAccordion(e) {
+
+                var parent = $(this).closest('.task');
+                var content = $(parent).find('.task-content-wrap');
+
+                if ($(parent).hasClass('open')) {
+                    $(content).slideUp(300, function () {
+                        return $(parent).removeClass('open');
+                    });
+                } else {
+                    $(content).slideDown(300, function () {
+                        return $(parent).addClass('open');
+                    });
+                }
             }
         }]);
 

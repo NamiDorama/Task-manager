@@ -12,6 +12,9 @@
             this.checkToken(self)
                 .then(this.getTasks)
                 .then(this.sortTasks)
+                .then(this.render)
+                .then(this.addEvent)
+                .then(Tasks.hidePreloader)
                 .catch(this.logout);
         }
 
@@ -71,15 +74,28 @@
             let undoneTasks = tasks.filter(task => task.status === 'undone');
 	        let doneTasks = tasks.filter(task => task.status === 'done');
 
-	        undoneTasks = Tasks.createObjFromArr(undoneTasks);
-	        doneTasks = Tasks.createObjFromArr(doneTasks);
+	        self.undoneTasks = Tasks.createObjFromArr(undoneTasks);
+	        self.doneTasks = Tasks.createObjFromArr(doneTasks);
 
-            console.log(undoneTasks);
-	        console.log(doneTasks);
+	        return self;
         }
 
         render(self) {
-            console.log('rendering tasks...');
+            console.log('rendering tasks...', self);
+
+            return new Promise(function(resolve, reject) {
+                resolve(self);
+            })
+        }
+
+        addEvent(self) {
+            console.log('Adding event...', self);
+            $('.task-header').on('click', Tasks.taskAccordion);
+        }
+
+        static hidePreloader() {
+
+            $('#loading').addClass('hide');
         }
 
         static createObjFromArr(arr) {
@@ -93,6 +109,18 @@
 	        });
 
             return obj;
+        }
+
+        static taskAccordion(e) {
+
+            let parent = $(this).closest('.task');
+            let content = $(parent).find('.task-content-wrap');
+
+            if($(parent).hasClass('open')) {
+                $(content).slideUp(300, () => $(parent).removeClass('open'));
+            } else {
+	            $(content).slideDown(300, () => $(parent).addClass('open'));
+            }
         }
 
 
