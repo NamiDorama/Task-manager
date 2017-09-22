@@ -165,8 +165,9 @@ a {
 		font-size: 1.8em;
 		font-family: 'SF-UI-Text-Semibold';
 		& > * {
-			&.active {
-				color: $generalColor;
+			color: inherit;
+			&:not(.active) {
+				color: #bdbdbd;
 			}
 			& + * {
 				&::before {
@@ -383,7 +384,14 @@ main {
 	top: 0;
 	left: 0;
 	right: 0;
-	z-index: 9999;
+	z-index: -1;
+	opacity: 0;
+	transition: opacity .4s linear;
+	&.open {
+		z-index: 9999;
+		opacity: 1;
+	}
+
 }
 
 .edit-task {
@@ -392,7 +400,15 @@ main {
 	background-color: #fff;
 	width: 100%;
 	padding: 5em 0;
-	z-index: 9999;
+	z-index: -1;
+	opacity: 0;
+	transform: translateY(100vh);
+	transition: z-index .1s linear, opacity .1s linear, transform .3s linear;
+	&.open{
+		z-index: 99999;
+		opacity: 1;
+		transform: translateY(0vh);
+	}
 	@media (min-width: 1024px) {
 		min-height: 50vh;
 	}

@@ -12,6 +12,7 @@
 		init() {
 			let self = this;
 			this.colors();
+			this.check();
 			this.event(self);
 		}
 
@@ -23,15 +24,60 @@
 			}
 		}
 
+		check() {
+			if(localStorage['bg-color']) this.getColor();
+		}
+
+		getColor() {
+			for (let i = 0, len = this._page.length; i < len; i++) {
+
+				if ($(this._page[i]).data('change') === 'bg') {
+
+					$(this._page[i]).css('background-color', JSON.parse(localStorage['bg-color']));
+
+				} else if($(this._page[i]).data('change') === 'color') {
+
+					$(this._page[i]).css('color', JSON.parse(localStorage['bg-color']));
+				}
+
+			}
+		}
+
+		// active() {
+		// 	let task_link = $('.toggle-task-list a');
+		//
+		// 	task_link.on('click', tab);
+		//
+		// 	function tab(e) {
+		// 		e.preventDefault();
+		// 		let active_link = task_link.attr('.active')
+		//
+		// 			if(localStorage['bg-color']) {
+		// 				$(active_link).css('color', JSON.parse(localStorage['bg-color']));
+		// 			}
+		// 	}
+		// }
+
 		event(self) {
 			self._li.on('click', function(e) {
 
-				// перебирать эл _page и проверять, если background-color или color = $general_color,
-				// то менять его на $(this).data('color') + вынести в отдельную функцию
+				for (let i = 0, len = self._page.length; i < len; i++) {
 
-				console.log($(this).data('color'));
+					if($(self._page[i]).data('change') === 'bg') {
+
+						let color = $(this).data('color');
+						$(self._page[i]).css('background-color', color);
+						localStorage.setItem('bg-color', JSON.stringify(color));
+
+					} else if ($(self._page[i]).data('change') === 'color' && $(self._page[i]).hasClass('active')) {
+						$(self._page[i]).css('color', $(this).data('color'));
+					}
+				}
+
 			});
 		}
+
+
 
 
 	}

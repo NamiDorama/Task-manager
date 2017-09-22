@@ -361,13 +361,15 @@ a {
     color: #bdbdbd;
     font-size: 1.8em;
     font-family: 'SF-UI-Text-Semibold'; }
-    .toggle-class-type .toggle-task-list > *.active {
-      color: #00a1f1; }
-    .toggle-class-type .toggle-task-list > * + *::before {
-      content: '/';
-      display: inline-block;
-      color: #bdbdbd;
-      margin-right: 0.3em; }
+    .toggle-class-type .toggle-task-list > * {
+      color: inherit; }
+      .toggle-class-type .toggle-task-list > *:not(.active) {
+        color: #bdbdbd; }
+      .toggle-class-type .toggle-task-list > * + *::before {
+        content: '/';
+        display: inline-block;
+        color: #bdbdbd;
+        margin-right: 0.3em; }
 
 main {
   padding-top: 220px; }
@@ -556,7 +558,13 @@ main {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 9999; }
+  z-index: -1;
+  opacity: 0;
+  -webkit-transition: opacity .4s linear;
+  transition: opacity .4s linear; }
+  .overlay.open {
+    z-index: 9999;
+    opacity: 1; }
 
 .edit-task {
   position: fixed;
@@ -564,7 +572,21 @@ main {
   background-color: #fff;
   width: 100%;
   padding: 5em 0;
-  z-index: 9999; }
+  z-index: -1;
+  opacity: 0;
+  -webkit-transform: translateY(100vh);
+      -ms-transform: translateY(100vh);
+          transform: translateY(100vh);
+  -webkit-transition: z-index .1s linear, opacity .1s linear, -webkit-transform .3s linear;
+  transition: z-index .1s linear, opacity .1s linear, -webkit-transform .3s linear;
+  transition: z-index .1s linear, opacity .1s linear, transform .3s linear;
+  transition: z-index .1s linear, opacity .1s linear, transform .3s linear, -webkit-transform .3s linear; }
+  .edit-task.open {
+    z-index: 99999;
+    opacity: 1;
+    -webkit-transform: translateY(0vh);
+        -ms-transform: translateY(0vh);
+            transform: translateY(0vh); }
   @media (min-width: 1024px) {
     .edit-task {
       min-height: 50vh; } }
