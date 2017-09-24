@@ -13,7 +13,12 @@
                 .then(this.getTasks)
                 .then(this.sortTasks)
                 .then(this.render)
-                .then(this.addEvent)
+	            .then(this.changePageColors)
+	            .then(this.eventChangeColor)
+	            .then(this.editTaskWindow)
+	            .then(this.newTaskWindow)
+	            .then(this.formTasksObj)
+	            .then(this.addEvent)
                 .then(Tasks.hidePreloader)
                 .catch(this.errorHandler);
         }
@@ -110,6 +115,67 @@
             });
         }
 
+        changePageColors(self) {
+
+	        return new Promise(function(resolve, reject) {
+
+		        let li = $('.user-nav a ul li'),
+			        page = $('*');
+
+		        for (let i = 0, len = li.length; i < len; i++) {
+
+			        $(li[i]).css('background-color', $(li[i]).data('color'));
+		        }
+
+		        if(localStorage['bg-color']) self.getColor();
+
+		        resolve(self);
+	        });
+        }
+
+	    getColor() {
+
+		    let page = $('*');
+
+		    for (let i = 0, len = page.length; i < len; i++) {
+
+			    if ($(page[i]).data('change') === 'bg') {
+
+				    $(page[i]).css('background-color', JSON.parse(localStorage['bg-color']));
+
+			    } else if($(page[i]).data('change') === 'color') {
+
+				    $(page[i]).css('color', JSON.parse(localStorage['bg-color']));
+			    }
+		    }
+	    }
+
+	    eventChangeColor(self) {
+
+        	return new Promise(function(resolve, reject) {
+
+		        let li = $('.user-nav a ul li'),
+			        page = $('*');
+
+		        li.on('click', function(e) {
+
+			        for (let i = 0, len = page.length; i < len; i++) {
+
+				        if($(page[i]).data('change') === 'bg') {
+
+					        let color = $(this).data('color');
+					        $(page[i]).css('background-color', color);
+					        localStorage.setItem('bg-color', JSON.stringify(color));
+
+				        } else if ($(page[i]).data('change') === 'color') {
+					        $(page[i]).css('color', $(this).data('color'));
+				        }
+			        }
+		        });
+		        resolve(self);
+	        });
+	    }
+
         addEvent(self) {
             console.log('Adding event...', self);
             $('.task-header').on('click', Tasks.taskAccordion);
@@ -123,8 +189,73 @@
 	        }
         }
 
+		newTaskWindow(self) {
+
+			return new Promise(function (resolve, reject) {
+
+				let plus = $('.add-task');
+				let overlay = $('.overlay');
+				let editTask = $('.edit-task');
+
+				plus.on('click', function (e) {
+
+					overlay.addClass('open');
+					editTask.addClass('open');
+
+				});
+				resolve(self);
+			});
+		}
+
+	    editTaskWindow(self) {
+
+		    return new Promise(function (resolve, reject) {
+
+			    let icon = $('.icon.icon-edit');
+			    let overlay = $('.overlay');
+			    let editTask = $('.edit-task');
+			    let taskDay = $('.task-day')
+
+			    icon.on('click', function (e) {
+
+				    overlay.addClass('open');
+				    editTask.addClass('open');
+
+				    let wrapTask = e.target.closest('.task-content-wrap');
+
+			    });
+			    resolve(self);
+		    });
+	    }
+
+		formTasksObj(self) {
+
+		        let addTaskBtn = $('.add-task-btn');
+
+		        addTaskBtn.on('click', function(e) {
+
+		        	let task = {
+		        		data: $('#task-date').val(),
+				        time: $('#task-time').val(),
+				        taskText: $('.textarea-wrap textarea').val()
+			        };
+		        	self.addNewTask(task);
+		        });
+		}
+
         addNewTask(task) {
 
+		        $.ajax({
+			        method: 'POST',
+			        url: 'http://localhost:8080/add',
+			        data: JSON.stringify(task),
+			        success: function(res) {
+						console.log('success');
+			        },
+			        error: function(error) {
+				        console.error('error');
+			        }
+		        });
         }
 
         static hidePreloader() {
